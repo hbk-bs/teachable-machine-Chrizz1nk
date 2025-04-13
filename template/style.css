@@ -1,8 +1,8 @@
-/* Allgemeines Styling */
+
 body {
     font-family: "Arial", sans-serif;
     background-color: #ffefa8;
-    color: #333;
+    color: #221f1f;
     margin: 0;
     padding: 0;
     display: flex;
@@ -11,7 +11,7 @@ body {
     justify-content: center;
 }
 
-/* Header */
+
 header {
     background-color: #4e2323;
     color: rgb(255, 255, 255);
@@ -27,13 +27,13 @@ p {
     padding: 10px 20px;
     border-radius: 5px;
     transition: 0.3s;
-	color: white;
+	color: rgb(0, 0, 0);
 	align-items: center;
 	justify-content: center;
     line-height: 25px;
-    font-size: larger;
+    font-size: 22px;
 }
-/* Container */
+
 .container {
     display: flex;
     flex-direction: column;
@@ -44,7 +44,7 @@ p {
     width: 100%;
 }
 
-/* Navigation */
+
 .archive-list {
     list-style: none;
     padding: 0;
@@ -64,11 +64,15 @@ p {
 
 .archive-list li:hover {
     background: #ffffff;
+    color: #4e2323;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .archive-list a {
-    text-decoration: none;
-    color: #ffffff;
+    font-family: "Arial", sans-serif;
+    text-decoration-thickness: 2px;
+    color: #000000;
     font-size: 20px;
 }
 
