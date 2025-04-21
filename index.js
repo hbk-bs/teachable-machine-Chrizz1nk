@@ -19,13 +19,6 @@ function setup() {
 }
 
 
-function setup() {
-  createCanvas(640, 520);
-  video = createCapture(VIDEO);
-  video.hide();
-  classifyVideo();
-}
-
 function draw() {
   background(0);
   image(video, 0, 0);
