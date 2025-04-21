@@ -5,6 +5,8 @@ let classifier;
 let modelURL = 'https://teachablemachine.withgoogle.com/models/TBLUhO5FL/';
 let emoji = "❓"; 
 
+let canvas = createCanvas(640, 520);
+canvas.parent("sketch");
 
 function setup() {
   createCanvas(640, 520);
