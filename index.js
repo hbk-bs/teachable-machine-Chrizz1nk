@@ -1,11 +1,14 @@
 
+
 let video;
 let label = "waiting..."; 
 let confidence = 0.0;
 let classifier;
-let modelURL = 'https://teachablemachine.withgoogle.com/models/TBLUhO5FL/';
+let modelURL = 'https://teachablemachine.withgoogle.com/models/sw1FS2JSz/';
 let emoji = "❓"; 
 
+let canvas = createCanvas(640, 520);
+canvas.parent("sketch");
 
 function preload() {
   classifier = ml5.imageClassifier(modelURL + 'model.json');
