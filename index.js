@@ -1,65 +1,55 @@
-let video;
-let label = "waiting..."; 
-let confidence = 0.0;
+// Classifier Variable
 let classifier;
-let modelURL = 'https://teachablemachine.withgoogle.com/models/TBLUhO5FL/';
-let emoji = "❓"; 
+// Model URL
+// HERE
+let imageModelURL = 'https://teachablemachine.withgoogle.com/models/6eL2SJyis/';
 
-let canvas = createCanvas(640, 520);
-canvas.parent("sketch");
+// Video
+let video;
+let flippedVideo;
+// To store the classification
+let label = '';
+
+// Load the model first
+function preload() {
+	classifier = ml5.imageClassifier(imageModelURL + 'model.json');
+	console.log(classifier);
+}
 
 function setup() {
-  createCanvas(640, 520);
-  video = createCapture(VIDEO);
-  video.hide();
+	createCanvas(320, 260);
+	// Create the video
+	video = createCapture(VIDEO);
+	video.size(320, 240);
+	video.hide();
 
-  // Modell laden und danach klassifizieren starten
-  classifier = ml5.imageClassifier(modelURL + 'model.json', () => {
-    console.log("Modell geladen!");
-    classifyVideo();
-  });
+	// Start classifying
+	classifyVideo();
 }
-
 
 function draw() {
-  background(0);
-  image(video, 0, 0);
+	background(0);
+	// Draw the video
+	image(video, 0, 0);
 
-  
-  textSize(32);
-  textAlign(CENTER, CENTER);
-  fill(255);
-  text(label + " " + confidence, width/2, height - 16);
-  
-  if (label == "Daumen Hoch") {
-    emoji = "👍";
-  } else if (label == "Daumen Runter") {
-    emoji = "👎";
-  }  else if (label == "nothing") {
-    emoji = "😐"; 
-  }
-  else if (label == "Haus") {
-    emoji = "🏠"; 
-  }
- 
-  
-  if (confidence > 0.9) {
-    textSize(256);
-    text(emoji, width/2, 0.7*height);
-  }
+	// Draw the label
+	fill(255);
+	textSize(16);
+	textAlign(CENTER);
+	text(label, width / 2, height - 4);
 }
 
+// Get a prediction for the current video frame
 function classifyVideo() {
-  classifier.classify(video, gotResults);
+	classifier.classify(video, gotResult);
 }
 
-function gotResults(error, results) {
-  if (error) {
-    console.error(error);
-    return;
-  }
- 
-  label = results[0].label;
-  confidence = nf(results[0].confidence, 0, 2);
-  classifyVideo();
+// When we get a result
+function gotResult(results) {
+	console.log(results);
+	// The results are in an array ordered by confidence.
+	// console.log(results[0]);
+	label = results[0].label;
+	// Classifiy again!
+	classifyVideo();
 }
