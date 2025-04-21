@@ -6,9 +6,18 @@ let modelURL = 'https://teachablemachine.withgoogle.com/models/TBLUhO5FL/';
 let emoji = "❓"; 
 
 
-function preload() {
-  classifier = ml5.imageClassifier(modelURL + 'model.json');
+function setup() {
+  createCanvas(640, 520);
+  video = createCapture(VIDEO);
+  video.hide();
+
+  // Modell laden und danach klassifizieren starten
+  classifier = ml5.imageClassifier(modelURL + 'model.json', () => {
+    console.log("Modell geladen!");
+    classifyVideo();
+  });
 }
+
 
 function setup() {
   createCanvas(640, 520);
