@@ -1,8 +1,34 @@
-html, body {
-    margin: 0;
-    padding: 0;
-  }
-  canvas {
-    display: block;
-  }
-  
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f2f2f2;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+#webcam-container {
+  margin: 20px auto;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+#colorStack {
+  margin-top: 20px;
+  min-height: 30px;
+}
+
+#resultColor {
+  margin-top: 20px;
+  padding: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid #ccc;
+}

@@ -1,39 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teachable Machine </title>
-    <style>
-    html,
-    body {
-        height: 100%;
-    }
-
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    main {
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KI-Farbmischer</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-    <div id="sketch"></div>
-    <a href="index.js">souce code</a>
-    </main>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.dom.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ml5/0.12.2/ml5.min.js"></script>
-    <!-- <script src="lib/p5.sound.min.js"></script> -->
+  <h1>KI-Farbmischer</h1>
+  <div id="webcam-container"></div>
+  <div id="label-container"></div>
 
-    <script src="index.js"></script>
+  <button id="addColorBtn">Farbe hinzufügen</button>
+  <button id="mixBtn">Farben mischen</button>
+  <button id="resetBtn">Zurücksetzen</button>
+
+  <div id="colorStack"></div>
+  <div id="resultColor">Gemischte Farbe erscheint hier</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>
