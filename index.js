@@ -3,19 +3,24 @@ let model, webcam, labelContainer, maxPredictions;
 let colorStack = [];
 
 async function init() {
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
 
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
+  try {
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
 
-    webcam = new tmImage.Webcam(200, 200, true);
-    await webcam.setup();
-    await webcam.play();
-    window.requestAnimationFrame(loop);
+      webcam = new tmImage.Webcam(200, 200, true); // width, height, flip
+      await webcam.setup(); // hier fragt der Browser nach Zugriff
+      await webcam.play();
+      window.requestAnimationFrame(loop);
 
-    document.getElementById("webcam-container").appendChild(webcam.canvas);
-    labelContainer = document.getElementById("label-container");
+      document.getElementById("webcam-container").appendChild(webcam.canvas);
+      labelContainer = document.getElementById("label-container");
+  } catch (error) {
+      console.error("Fehler beim Initialisieren der Kamera oder des Modells:", error);
+      alert("Kamerazugriff fehlgeschlagen. Bitte gib im Browser die Erlaubnis.");
+  }
 }
 
 async function loop() {
