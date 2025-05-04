@@ -1,26 +1,58 @@
 const URL = "https://teachablemachine.withgoogle.com/models/teNMTMV1b/";
 let model, webcam, labelContainer, maxPredictions;
 let colorStack = [];
+let currentColor = "";
+let webcamStarted = false;
+
+document.getElementById("addColorBtn").addEventListener("click", async () => {
+    if (!webcamStarted) {
+        await init(); // Kamera + Modell wird erst hier geladen
+        webcamStarted = true;
+    }
+
+    if (currentColor) {
+        colorStack.push(currentColor);
+        updateColorStack();
+    }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+    colorStack = [];
+    updateColorStack();
+    document.getElementById("resultColor").textContent = "Gemischte Farbe erscheint hier";
+    document.getElementById("resultColor").style.backgroundColor = "";
+});
+
+document.getElementById("mixBtn").addEventListener("click", () => {
+    const result = mixColors(colorStack);
+    document.getElementById("resultColor").textContent = `Gemischte Farbe: ${result.name}`;
+    document.getElementById("resultColor").style.backgroundColor = result.css;
+});
+
+function updateColorStack() {
+    document.getElementById("colorStack").textContent = `Farben: ${colorStack.join(" + ")}`;
+}
 
 async function init() {
-  const modelURL = URL + "model.json";
-  const metadataURL = URL + "metadata.json";
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
-  try {
-      model = await tmImage.load(modelURL, metadataURL);
-      maxPredictions = model.getTotalClasses();
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
 
-      webcam = new tmImage.Webcam(200, 200, true); // width, height, flip
-      await webcam.setup(); // hier fragt der Browser nach Zugriff
-      await webcam.play();
-      window.requestAnimationFrame(loop);
+        webcam = new tmImage.Webcam(200, 200, true); // width, height, flip
+        await webcam.setup(); // fragt hier nach Kamerazugriff
+        await webcam.play();
 
-      document.getElementById("webcam-container").appendChild(webcam.canvas);
-      labelContainer = document.getElementById("label-container");
-  } catch (error) {
-      console.error("Fehler beim Initialisieren der Kamera oder des Modells:", error);
-      alert("Kamerazugriff fehlgeschlagen. Bitte gib im Browser die Erlaubnis.");
-  }
+        window.requestAnimationFrame(loop);
+
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+    } catch (error) {
+        console.error("Kamera konnte nicht gestartet werden:", error);
+        alert("Fehler beim Starten der Kamera. Bitte Zugriff erlauben.");
+    }
 }
 
 async function loop() {
@@ -35,32 +67,6 @@ async function predict() {
     labelContainer.innerHTML = `Erkannt: ${prediction[0].className}`;
     currentColor = prediction[0].className;
 }
-
-let currentColor = "";
-
-document.getElementById("addColorBtn").addEventListener("click", () => {
-    if (currentColor) {
-        colorStack.push(currentColor);
-        updateColorStack();
-    }
-});
-
-document.getElementById("resetBtn").addEventListener("click", () => {
-    colorStack = [];
-    updateColorStack();
-    document.getElementById("resultColor").textContent = "Gemischte Farbe erscheint hier";
-    document.getElementById("resultColor").style.backgroundColor = "";
-});
-
-function updateColorStack() {
-    document.getElementById("colorStack").textContent = `Farben: ${colorStack.join(" + ")}`;
-}
-
-document.getElementById("mixBtn").addEventListener("click", () => {
-    const result = mixColors(colorStack);
-    document.getElementById("resultColor").textContent = `Gemischte Farbe: ${result.name}`;
-    document.getElementById("resultColor").style.backgroundColor = result.css;
-});
 
 function mixColors(colors) {
     const colorMap = {
@@ -97,5 +103,3 @@ function mixColors(colors) {
         css: `rgb(${r}, ${g}, ${b})`
     };
 }
-
-init();
