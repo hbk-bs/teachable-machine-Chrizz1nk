@@ -1,33 +1,54 @@
-/* Styling für die gesamte Seite */
+/* Modernes dunkles Theme für den Farbmischer */
+:root {
+  --primary-color: #6200ea;
+  --primary-light: #9d46ff;
+  --primary-dark: #0a00b6;
+  --background-dark: #121212;
+  --surface-dark: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --error-color: #cf6679;
+  --success-color: #03dac6;
+}
+
 body {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Segoe UI', 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f0f0;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
 }
 
 header {
-  background-color: #333;
-  color: white;
+  background-color: var(--primary-color);
   width: 100%;
   text-align: center;
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
   margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+h3 {
+  color: var(--primary-light);
+  margin-bottom: 0.5rem;
 }
 
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 800px;
+  max-width: 900px;
   width: 100%;
   padding: 0 1rem;
 }
@@ -38,19 +59,21 @@ h1 {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 #webcam-container {
   width: 100%;
   max-width: 500px;
   margin-bottom: 1rem;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 #webcam {
   width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
 /* Ergebnisse und Farb-Container */
@@ -66,29 +89,63 @@ h1 {
   width: 100%;
   display: flex;
   justify-content: space-around;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.detection-info > div {
+  background-color: var(--surface-dark);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  flex: 1;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .color-box {
-  width: 150px;
-  height: 150px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 0.5rem;
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  margin: 1rem 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--text-primary);
   font-weight: bold;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+  font-size: 1.1rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
+}
+
+.color-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 50%);
+  pointer-events: none;
 }
 
 #detected-color {
-  background-color: #ccc;
+  background-color: #333;
 }
 
 #mixed-color {
-  background-color: #ccc;
+  background-color: #333;
+}
+
+#detection-label, #mix-info {
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  text-align: center;
 }
 
 .color-history {
@@ -97,70 +154,120 @@ h1 {
   justify-content: center;
   width: 100%;
   margin-top: 1rem;
+  gap: 0.5rem;
 }
 
 .history-item {
-  width: 50px;
-  height: 50px;
-  border-radius: 4px;
-  margin: 0.25rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0) 50%);
+  pointer-events: none;
+}
+
+.history-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
 }
 
 .controls {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin: 1.5rem 0;
   width: 100%;
 }
 
 button {
-  background-color: #4CAF50;
+  background-color: var(--primary-color);
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 12px 24px;
+  border-radius: 24px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
 }
 
 button:hover {
-  background-color: #45a049;
+  background-color: var(--primary-light);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background-color: #555;
+  color: #888;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 #reset-btn {
-  background-color: #f44336;
+  background-color: var(--error-color);
 }
 
 #reset-btn:hover {
-  background-color: #d32f2f;
+  background-color: #e57373;
 }
 
 .info-text {
   text-align: center;
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #e7f3fe;
-  border-left: 4px solid #2196F3;
-  border-radius: 4px;
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background-color: rgba(98, 0, 234, 0.1);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Responsive Design */
-@media (max-width: 600px) {
-  .container {
-      padding: 0 0.5rem;
+@media (max-width: 768px) {
+  .detection-info {
+      flex-direction: column;
+      align-items: center;
   }
-
+  
+  .detection-info > div {
+      width: 100%;
+  }
+  
   .color-box {
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls {
+      flex-direction: column;
+      gap: 0.75rem;
+  }
+  
+  button {
+      width: 100%;
   }
 }
