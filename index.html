@@ -1,24 +1,55 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KI-Farbmischer</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farben-Mischer</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>KI-Farbmischer</h1>
-  <div id="webcam-container"></div>
-  <div id="label-container"></div>
+    <header>
+        <h1>Farben-Mischer</h1>
+    </header>
 
-  <button id="addColorBtn">Farbe hinzufügen</button>
-  <button id="mixBtn">Farben mischen</button>
-  <button id="resetBtn">Zurücksetzen</button>
+    <div class="container">
+        <div class="media-container">
+            <div id="webcam-container">
+                <video id="webcam" autoplay playsinline></video>
+            </div>
+        </div>
 
-  <div id="colorStack"></div>
-  <div id="resultColor">Gemischte Farbe erscheint hier</div>
+        <div class="results-container">
+            <div class="detection-info">
+                <div>
+                    <h3>Erkannte Farbe</h3>
+                    <div id="detected-color" class="color-box">Keine Farbe erkannt</div>
+                    <p id="detection-label">Warte auf Erkennung...</p>
+                </div>
+                <div>
+                    <h3>Gemischte Farbe</h3>
+                    <div id="mixed-color" class="color-box">Noch keine Mischung</div>
+                    <p id="mix-info">Mische Farben durch Hinzufügen</p>
+                </div>
+            </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-  <script src="index.js"></script>
+            <div class="controls">
+                <button id="add-btn" disabled>Farbe hinzufügen</button>
+                <button id="reset-btn">Zurücksetzen</button>
+            </div>
+
+            <div class="info-text">
+                <p>Halte farbige Karten in die Kamera und füge sie zur Mischung hinzu!</p>
+                <p>Unterstützte Farben: Rot, Grün, Blau, Gelb</p>
+            </div>
+
+            <h3>Verlauf</h3>
+            <div id="color-history" class="color-history"></div>
+        </div>
+    </div>
+
+    <!-- Teachable Machine Skript laden -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+    <script src="index.js"></script>
 </body>
 </html>

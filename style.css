@@ -1,34 +1,166 @@
+/* Styling für die gesamte Seite */
 body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f2f2f2;
+  font-family: 'Arial', sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0;
+}
+
+header {
+  background-color: #333;
+  color: white;
+  width: 100%;
+  text-align: center;
+  padding: 1rem 0;
+  margin-bottom: 2rem;
 }
 
 h1 {
-  color: #333;
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+  width: 100%;
+  padding: 0 1rem;
+}
+
+/* Webcam und Canvas Container */
+.media-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 #webcam-container {
-  margin: 20px auto;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 1rem;
+}
+
+#webcam {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Ergebnisse und Farb-Container */
+.results-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.detection-info {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.color-box {
+  width: 150px;
+  height: 150px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+#detected-color {
+  background-color: #ccc;
+}
+
+#mixed-color {
+  background-color: #ccc;
+}
+
+.color-history {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.history-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 4px;
+  margin: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  width: 100%;
 }
 
 button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
-#colorStack {
-  margin-top: 20px;
-  min-height: 30px;
+button:hover {
+  background-color: #45a049;
 }
 
-#resultColor {
-  margin-top: 20px;
-  padding: 30px;
-  font-size: 18px;
-  font-weight: bold;
-  border: 2px solid #ccc;
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+#reset-btn {
+  background-color: #f44336;
+}
+
+#reset-btn:hover {
+  background-color: #d32f2f;
+}
+
+.info-text {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #e7f3fe;
+  border-left: 4px solid #2196F3;
+  border-radius: 4px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+      padding: 0 0.5rem;
+  }
+
+  .color-box {
+      width: 120px;
+      height: 120px;
+  }
 }
