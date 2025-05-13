@@ -1,4 +1,4 @@
-/* Modernes dunkles Theme für den Farbmischer */
+
 :root {
   --primary-color: #6200ea;
   --primary-light: #9d46ff;
@@ -53,7 +53,7 @@ h3 {
   padding: 0 1rem;
 }
 
-/* Webcam und Canvas Container */
+
 .media-container {
   display: flex;
   flex-direction: column;
@@ -76,7 +76,7 @@ h3 {
   display: block;
 }
 
-/* Ergebnisse und Farb-Container */
+
 .results-container {
   display: flex;
   flex-direction: column;
@@ -244,7 +244,7 @@ button:disabled {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .detection-info {
       flex-direction: column;
