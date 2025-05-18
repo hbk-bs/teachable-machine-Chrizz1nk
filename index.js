@@ -5,10 +5,21 @@ const addButton = document.getElementById('add-btn');
 const resetButton = document.getElementById('reset-btn');
 
 const colorMap = {
-    "Rot": { color: "#FF0000", rgb: [255, 0, 0] },
-    "Grün": { color: "#00FF00", rgb: [0, 255, 0] },
-    "Blau": { color: "#0000FF", rgb: [0, 0, 255] },
-    "Gelb": { color: "#FFFF00", rgb: [255, 255, 0] }
+    "Rot":   { color: "#FF0000", rgb: [255, 0, 0] },
+    "Grün":  { color: "#00FF00", rgb: [0, 255, 0] },
+    "Blau":  { color: "#0000FF", rgb: [0, 0, 255] },
+    "Gelb":  { color: "#FFFF00", rgb: [255, 255, 0] },
+    // Neue gemischte Farben
+    "Orange":    { color: "#FFA500", rgb: [255, 165, 0] },      // Rot + Gelb
+    "Türkis":    { color: "#40E0D0", rgb: [64, 224, 208] },     // Grün + Blau
+    "Violett":   { color: "#800080", rgb: [128, 0, 128] },      // Rot + Blau
+    "Hellgrün":  { color: "#ADFF2F", rgb: [173, 255, 47] },     // Gelb + Grün
+    // Drei-Farben-Mischungen
+    "Braun":     { color: "#A0522D", rgb: [160, 82, 45] },      // Rot + Gelb + Blau
+    "Lime":      { color: "#BFFF00", rgb: [191, 255, 0] },      // Gelb + Grün + Blau
+    "Magenta":   { color: "#FF00FF", rgb: [255, 0, 255] },      // Rot + Blau + Gelb (Alternative zu Braun)
+    
+    
 };
 
 let model;
