@@ -1,14 +1,9 @@
-// Elemente auswählen
 const video = document.getElementById('webcam');
 const detectedColorBox = document.getElementById('detected-color');
-const detectionLabel = document.getElementById('detection-label');
 const mixedColorBox = document.getElementById('mixed-color');
-const mixInfo = document.getElementById('mix-info');
 const addButton = document.getElementById('add-btn');
 const resetButton = document.getElementById('reset-btn');
-const colorHistory = document.getElementById('color-history');
 
-// Farben-Map
 const colorMap = {
     "Rot": { color: "#FF0000", rgb: [255, 0, 0] },
     "Grün": { color: "#00FF00", rgb: [0, 255, 0] },
@@ -16,225 +11,74 @@ const colorMap = {
     "Gelb": { color: "#FFFF00", rgb: [255, 255, 0] }
 };
 
-// Webcam starten
-async function setupWebcam() {
-    return new Promise((resolve, reject) => {
-        const constraints = {
-            video: true
-        };
-        navigator.mediaDevices.getUserMedia(constraints)
-            .then(stream => {
-                video.srcObject = stream;
-                video.addEventListener('loadeddata', () => {
-                    resolve();
-                });
-            })
-            .catch(error => {
-                console.error("Fehler beim Zugriff auf die Webcam:", error);
-                reject(error);
-            });
-    });
-}
-
-// Variablen für das Modell und die aktuelle Erkennung
 let model;
 let currentDetection = null;
 let mixedColors = [];
 
-// Teachable Machine Modell laden
+async function setupWebcam() {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    return new Promise(resolve => {
+        video.onloadeddata = () => resolve();
+    });
+}
+
 async function loadModel() {
     const modelURL = "https://teachablemachine.withgoogle.com/models/teNMTMV1b/";
-    const modelJson = modelURL + "model.json";
-    const metadataJson = modelURL + "metadata.json";
-    
-    model = await tmImage.load(modelJson, metadataJson);
-    console.log("Modell geladen!");
-    
-    // Nach dem Laden des Modells mit der Vorhersage beginnen
+    model = await tmImage.load(modelURL + "model.json", modelURL + "metadata.json");
     predictLoop();
 }
 
-// Endlos-Schleife für die Vorhersage
 async function predictLoop() {
     while (true) {
         await predict();
-        await new Promise(resolve => setTimeout(resolve, 100)); // Kurze Pause
+        await new Promise(resolve => setTimeout(resolve, 100));
     }
 }
 
-// Vorhersage mit dem Modell
 async function predict() {
     if (!model) return;
-    
-    // Vorhersage mit dem aktuellen Bild der Webcam
     const prediction = await model.predict(video);
-    
-    // Höchste Wahrscheinlichkeit finden
-    let highestProbability = 0;
-    let highestClass = null;
-    
-    prediction.forEach(p => {
-        if (p.probability > highestProbability && p.probability > 0.7) { // Nur erkennen, wenn die Wahrscheinlichkeit > 70%
-            highestProbability = p.probability;
-            highestClass = p.className;
-        }
-    });
-    
-    // Ergebnis aktualisieren
-    if (highestClass && colorMap[highestClass]) {
-        currentDetection = highestClass;
-        detectedColorBox.style.backgroundColor = colorMap[highestClass].color;
-        detectedColorBox.textContent = highestClass;
-        detectionLabel.textContent = `${highestClass} erkannt (${(highestProbability * 100).toFixed(1)}%)`;
+    let highest = prediction.reduce((max, p) => p.probability > max.probability ? p : max, {probability:0});
+    if (highest.probability > 0.7 && colorMap[highest.className]) {
+        currentDetection = highest.className;
+        detectedColorBox.style.backgroundColor = colorMap[highest.className].color;
         addButton.disabled = false;
     } else {
         currentDetection = null;
         detectedColorBox.style.backgroundColor = "#ccc";
-        detectedColorBox.textContent = "Keine Farbe erkannt";
-        detectionLabel.textContent = "Warte auf Erkennung...";
         addButton.disabled = true;
     }
 }
 
-// Farbe zur Mischung hinzufügen
 function addColor() {
-    if (!currentDetection || !colorMap[currentDetection]) return;
-    
+    if (!currentDetection) return;
     mixedColors.push(currentDetection);
     updateMixedColor();
-    updateColorHistory();
 }
 
-// Gemischte Farbe aktualisieren
 function updateMixedColor() {
     if (mixedColors.length === 0) {
         mixedColorBox.style.backgroundColor = "#ccc";
-        mixedColorBox.textContent = "Noch keine Mischung";
-        mixInfo.textContent = "Mische Farben durch Hinzufügen";
         return;
     }
-    
-    // RGB-Werte aller Farben addieren und dann den Durchschnitt berechnen
-    let totalR = 0, totalG = 0, totalB = 0;
-    
-    mixedColors.forEach(colorName => {
-        const rgb = colorMap[colorName].rgb;
-        totalR += rgb[0];
-        totalG += rgb[1];
-        totalB += rgb[2];
-    });
-    
-    // Durchschnitt berechnen
-    const avgR = Math.min(255, Math.round(totalR / mixedColors.length));
-    const avgG = Math.min(255, Math.round(totalG / mixedColors.length));
-    const avgB = Math.min(255, Math.round(totalB / mixedColors.length));
-    
-    // Gemischte Farbe aktualisieren
-    const mixedColorHex = `rgb(${avgR}, ${avgG}, ${avgB})`;
-    mixedColorBox.style.backgroundColor = mixedColorHex;
-    
-    // Text für die gemischte Farbe ermitteln
-    let colorText = getMixedColorName(avgR, avgG, avgB);
-    mixedColorBox.textContent = colorText;
-    
-    // Info-Text aktualisieren
-    mixInfo.textContent = `Gemischt aus ${mixedColors.join(' + ')}`;
+    let total = mixedColors.reduce((acc, name) => {
+        let rgb = colorMap[name].rgb;
+        return [acc[0]+rgb[0], acc[1]+rgb[1], acc[2]+rgb[2]];
+    }, [0,0,0]);
+    let avg = total.map(x => Math.min(255, Math.round(x / mixedColors.length)));
+    mixedColorBox.style.backgroundColor = `rgb(${avg[0]},${avg[1]},${avg[2]})`;
 }
 
-/**
- * Name für die gemischte Farbe ermitteln, ohne reine RGB-Ausgabe.
- * Gibt immer einen Farbnamen zurück, auch wenn keine exakte Übereinstimmung.
- */
-function getMixedColorName(r, g, b) {
-    // Einfache Farbbestimmung basierend auf RGB-Werten
-    if (r > 200 && g > 200 && b > 200) return "Weiß";
-    if (r < 50 && g < 50 && b < 50) return "Schwarz";
-    if (r > 200 && g > 200 && b < 100) return "Gelb";
-    if (r > 200 && g < 100 && b > 200) return "Magenta";
-    if (r < 100 && g > 200 && b > 200) return "Cyan";
-    if (r > 200 && g < 100 && b < 100) return "Rot";
-    if (r < 100 && g > 200 && b < 100) return "Grün";
-    if (r < 100 && g < 100 && b > 200) return "Blau";
-    if (r > 200 && g > 100 && b < 100) return "Orange";
-    if (r > 100 && g < 100 && b > 100) return "Lila";
-    if (r < 100 && g > 100 && b > 100) return "Türkis";
-
-    // Wenn keine exakte Übereinstimmung, den nächsten Farbname anhand der Distanz finden
-    const colorNames = [
-        { name: "Weiß", rgb: [255, 255, 255] },
-        { name: "Schwarz", rgb: [0, 0, 0] },
-        { name: "Gelb", rgb: [255, 255, 0] },
-        { name: "Magenta", rgb: [255, 0, 255] },
-        { name: "Cyan", rgb: [0, 255, 255] },
-        { name: "Rot", rgb: [255, 0, 0] },
-        { name: "Grün", rgb: [0, 255, 0] },
-        { name: "Blau", rgb: [0, 0, 255] },
-        { name: "Orange", rgb: [255, 165, 0] },
-        { name: "Lila", rgb: [128, 0, 128] },
-        { name: "Türkis", rgb: [64, 224, 208] }
-    ];
-
-    let minDist = Infinity;
-    let closestName = "Unbekannt";
-    colorNames.forEach(c => {
-        const dist = Math.sqrt(
-            Math.pow(r - c.rgb[0], 2) +
-            Math.pow(g - c.rgb[1], 2) +
-            Math.pow(b - c.rgb[2], 2)
-        );
-        if (dist < minDist) {
-            minDist = dist;
-            closestName = c.name;
-        }
-    });
-
-    return closestName;
-}
-
-// Farbverlauf aktualisieren
-function updateColorHistory() {
-    // Verlauf leeren
-    colorHistory.innerHTML = "";
-    
-    // Für jede Farbe in der Mischung ein Element hinzufügen
-    mixedColors.forEach((colorName, index) => {
-        const historyItem = document.createElement('div');
-        historyItem.className = 'history-item';
-        historyItem.style.backgroundColor = colorMap[colorName].color;
-        historyItem.title = colorName;
-        
-        // Lösch-Funktion hinzufügen
-        historyItem.addEventListener('click', () => {
-            mixedColors.splice(index, 1);
-            updateMixedColor();
-            updateColorHistory();
-        });
-        
-        colorHistory.appendChild(historyItem);
-    });
-}
-
-// Zurücksetzen der Mischung
 function resetMix() {
     mixedColors = [];
     updateMixedColor();
-    updateColorHistory();
 }
 
-// Event-Listener
 addButton.addEventListener('click', addColor);
 resetButton.addEventListener('click', resetMix);
 
-// Seite initialisieren
-async function init() {
-    try {
-        await setupWebcam();
-        await loadModel();
-    } catch (error) {
-        console.error("Fehler bei der Initialisierung:", error);
-        alert("Fehler beim Laden der Webcam oder des Modells. Bitte überprüfe deine Kamera-Einstellungen und versuche es erneut.");
-    }
-}
-
-// Seite initialisieren, wenn das DOM geladen ist
-window.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', async () => {
+    await setupWebcam();
+    await loadModel();
+});
