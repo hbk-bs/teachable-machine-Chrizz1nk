@@ -9,43 +9,15 @@ const colorMap = {
     "Grün":  { color: "#00FF00", rgb: [0, 255, 0] },
     "Blau":  { color: "#0000FF", rgb: [0, 0, 255] },
     "Gelb":  { color: "#FFFF00", rgb: [255, 255, 0] },
-    // Neue gemischte Farben
-    "Orange":    { color: "#FFA500", rgb: [255, 165, 0] },      // Rot + Gelb
-    "Türkis":    { color: "#40E0D0", rgb: [64, 224, 208] },     // Grün + Blau
-    "Violett":   { color: "#800080", rgb: [128, 0, 128] },      // Rot + Blau
-    "Hellgrün":  { color: "#ADFF2F", rgb: [173, 255, 47] },     // Gelb + Grün
-    // Drei-Farben-Mischungen
-    "Braun":     { color: "#A0522D", rgb: [160, 82, 45] },      // Rot + Gelb + Blau
-    "Lime":      { color: "#BFFF00", rgb: [191, 255, 0] },      // Gelb + Grün + Blau
-    "Magenta":   { color: "#FF00FF", rgb: [255, 0, 255] },      // Rot + Blau + Gelb (Alternative zu Braun)
-    
-    
+    "Orange":    { color: "#FFA500", rgb: [255, 165, 0] },
+    "Türkis":    { color: "#40E0D0", rgb: [64, 224, 208] },
+    "Violett":   { color: "#800080", rgb: [128, 0, 128] },
+    "Hellgrün":  { color: "#ADFF2F", rgb: [173, 255, 47] },
+    "Braun":     { color: "#A0522D", rgb: [160, 82, 45] },
+    "Lime":      { color: "#BFFF00", rgb: [191, 255, 0] },
+    "Magenta":   { color: "#FF00FF", rgb: [255, 0, 255] }
 };
-const mixedColorName = document.getElementById('mixed-color-name');
 
-function updateMixedColor() {
-    if (mixedColors.length === 0) {
-        mixedColorBox.style.backgroundColor = "#ccc";
-        mixedColorName.textContent = "";
-        return;
-    }
-    let total = mixedColors.reduce((acc, name) => {
-        let rgb = colorMap[name].rgb;
-        return [acc[0]+rgb[0], acc[1]+rgb[1], acc[2]+rgb[2]];
-    }, [0,0,0]);
-    let avg = total.map(x => Math.min(255, Math.round(x / mixedColors.length)));
-    mixedColorBox.style.backgroundColor = `rgb(${avg[0]},${avg[1]},${avg[2]})`;
-
-    // Try to find a matching color name
-    let foundName = "";
-    for (const [name, value] of Object.entries(colorMap)) {
-        if (value.rgb[0] === avg[0] && value.rgb[1] === avg[1] && value.rgb[2] === avg[2]) {
-            foundName = name;
-            break;
-        }
-    }
-    mixedColorName.textContent = foundName ? foundName : "";
-}
 let model;
 let currentDetection = null;
 let mixedColors = [];
@@ -84,6 +56,7 @@ async function predict() {
         detectedColorBox.style.backgroundColor = "#ccc";
         addButton.disabled = true;
     }
+    updateDetectedColorName();
 }
 
 function addColor() {
@@ -95,6 +68,7 @@ function addColor() {
 function updateMixedColor() {
     if (mixedColors.length === 0) {
         mixedColorBox.style.backgroundColor = "#ccc";
+        mixedColorBox.textContent = "Keine Mischung";
         return;
     }
     let total = mixedColors.reduce((acc, name) => {
@@ -103,11 +77,16 @@ function updateMixedColor() {
     }, [0,0,0]);
     let avg = total.map(x => Math.min(255, Math.round(x / mixedColors.length)));
     mixedColorBox.style.backgroundColor = `rgb(${avg[0]},${avg[1]},${avg[2]})`;
+    mixedColorBox.textContent = mixedColors.join(" + ");
 }
 
 function resetMix() {
     mixedColors = [];
     updateMixedColor();
+}
+
+function updateDetectedColorName() {
+    detectedColorBox.textContent = currentDetection ? currentDetection : "Keine Farbe";
 }
 
 addButton.addEventListener('click', addColor);
@@ -116,4 +95,6 @@ resetButton.addEventListener('click', resetMix);
 window.addEventListener('DOMContentLoaded', async () => {
     await setupWebcam();
     await loadModel();
+    updateDetectedColorName();
+    updateMixedColor();
 });
