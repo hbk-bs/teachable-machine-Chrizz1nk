@@ -141,25 +141,54 @@ function updateMixedColor() {
     mixInfo.textContent = `Gemischt aus ${mixedColors.join(' + ')}`;
 }
 
-// Name für die gemischte Farbe ermitteln
+/**
+ * Name für die gemischte Farbe ermitteln, ohne reine RGB-Ausgabe.
+ * Gibt immer einen Farbnamen zurück, auch wenn keine exakte Übereinstimmung.
+ */
 function getMixedColorName(r, g, b) {
     // Einfache Farbbestimmung basierend auf RGB-Werten
     if (r > 200 && g > 200 && b > 200) return "Weiß";
     if (r < 50 && g < 50 && b < 50) return "Schwarz";
-    
     if (r > 200 && g > 200 && b < 100) return "Gelb";
     if (r > 200 && g < 100 && b > 200) return "Magenta";
     if (r < 100 && g > 200 && b > 200) return "Cyan";
-    
     if (r > 200 && g < 100 && b < 100) return "Rot";
     if (r < 100 && g > 200 && b < 100) return "Grün";
     if (r < 100 && g < 100 && b > 200) return "Blau";
-    
     if (r > 200 && g > 100 && b < 100) return "Orange";
     if (r > 100 && g < 100 && b > 100) return "Lila";
     if (r < 100 && g > 100 && b > 100) return "Türkis";
-    
-    return `RGB(${r},${g},${b})`;
+
+    // Wenn keine exakte Übereinstimmung, den nächsten Farbname anhand der Distanz finden
+    const colorNames = [
+        { name: "Weiß", rgb: [255, 255, 255] },
+        { name: "Schwarz", rgb: [0, 0, 0] },
+        { name: "Gelb", rgb: [255, 255, 0] },
+        { name: "Magenta", rgb: [255, 0, 255] },
+        { name: "Cyan", rgb: [0, 255, 255] },
+        { name: "Rot", rgb: [255, 0, 0] },
+        { name: "Grün", rgb: [0, 255, 0] },
+        { name: "Blau", rgb: [0, 0, 255] },
+        { name: "Orange", rgb: [255, 165, 0] },
+        { name: "Lila", rgb: [128, 0, 128] },
+        { name: "Türkis", rgb: [64, 224, 208] }
+    ];
+
+    let minDist = Infinity;
+    let closestName = "Unbekannt";
+    colorNames.forEach(c => {
+        const dist = Math.sqrt(
+            Math.pow(r - c.rgb[0], 2) +
+            Math.pow(g - c.rgb[1], 2) +
+            Math.pow(b - c.rgb[2], 2)
+        );
+        if (dist < minDist) {
+            minDist = dist;
+            closestName = c.name;
+        }
+    });
+
+    return closestName;
 }
 
 // Farbverlauf aktualisieren
