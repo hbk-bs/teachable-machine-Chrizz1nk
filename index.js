@@ -90,14 +90,32 @@ function addColor() {
     updateMixedColor();
     updateColorHistory();
 }
-// Gemischte Farbe aktualisieren
-function updateMixedColor() {
-    if (mixedColors.length === 0) {
-        mixedColorBox.style.backgroundColor = "#ccc";
-        mixedColorBox.textContent = "Noch keine Mischung";
-        mixInfo.textContent = "Mische Farben durch Hinzufügen";
-        return;
-    }
+function updateColorHistory() {
+    // Verlauf leeren
+    colorHistory.innerHTML = "";
+    // Für jede Farbe in der Mischung ein Element hinzufügen
+    mixedColors.forEach((colorName, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.style.backgroundColor = colorMap[colorName].color;
+        historyItem.title = colorName;
+        historyItem.textContent = colorName; // <-- Text anzeigen
+        historyItem.style.color = "#000"; // Für bessere Lesbarkeit
+        historyItem.style.fontSize = "12px"; // Optional
+        historyItem.style.textAlign = "center"; // Optional
+        historyItem.style.padding = "4px"; // Optional
+        historyItem.style.borderRadius = "4px"; // Optional
+
+        // Lösch-Funktion hinzufügen
+        historyItem.addEventListener('click', () => {
+            mixedColors.splice(index, 1);
+            updateMixedColor();
+            updateColorHistory();
+        });
+        colorHistory.appendChild(historyItem);
+    });
+}
+
     // RGB-Werte aller Farben addieren und dann den Durchschnitt berechnen
     let totalR = 0, totalG = 0, totalB = 0;
     mixedColors.forEach(colorName => {
@@ -118,7 +136,7 @@ function updateMixedColor() {
     mixedColorBox.textContent = colorText;
     // Info-Text aktualisieren
     mixInfo.textContent = `Gemischt aus ${mixedColors.join(' + ')}`;
-}
+
 /**
  * Name für die gemischte Farbe ermitteln, ohne reine RGB-Ausgabe.
  * Gibt immer einen Farbnamen zurück, auch wenn keine exakte Übereinstimmung.
