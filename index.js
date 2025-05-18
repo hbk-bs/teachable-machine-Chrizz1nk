@@ -21,7 +21,31 @@ const colorMap = {
     
     
 };
+const mixedColorName = document.getElementById('mixed-color-name');
 
+function updateMixedColor() {
+    if (mixedColors.length === 0) {
+        mixedColorBox.style.backgroundColor = "#ccc";
+        mixedColorName.textContent = "";
+        return;
+    }
+    let total = mixedColors.reduce((acc, name) => {
+        let rgb = colorMap[name].rgb;
+        return [acc[0]+rgb[0], acc[1]+rgb[1], acc[2]+rgb[2]];
+    }, [0,0,0]);
+    let avg = total.map(x => Math.min(255, Math.round(x / mixedColors.length)));
+    mixedColorBox.style.backgroundColor = `rgb(${avg[0]},${avg[1]},${avg[2]})`;
+
+    // Try to find a matching color name
+    let foundName = "";
+    for (const [name, value] of Object.entries(colorMap)) {
+        if (value.rgb[0] === avg[0] && value.rgb[1] === avg[1] && value.rgb[2] === avg[2]) {
+            foundName = name;
+            break;
+        }
+    }
+    mixedColorName.textContent = foundName ? foundName : "";
+}
 let model;
 let currentDetection = null;
 let mixedColors = [];
