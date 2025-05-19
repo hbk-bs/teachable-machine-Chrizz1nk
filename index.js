@@ -1,4 +1,4 @@
-// Elemente auswählen
+// Elemente
 const video = document.getElementById('webcam');
 const detectedColorBox = document.getElementById('detected-color');
 const detectionLabel = document.getElementById('detection-label');
@@ -8,7 +8,7 @@ const addButton = document.getElementById('add-btn');
 const resetButton = document.getElementById('reset-btn');
 const colorHistory = document.getElementById('color-history');
 
-// Farben-Map
+// Farben
 const colorMap = {
     "Rot": { color: "#FF0000", rgb: [255, 0, 0] },
     "Grün": { color: "#00FF00", rgb: [0, 255, 0] },
@@ -16,7 +16,7 @@ const colorMap = {
     "Gelb": { color: "#FFFF00", rgb: [255, 255, 0] }
 };
 
-// Webcam starten
+// Für Webcam 
 async function setupWebcam() {
     return new Promise((resolve, reject) => {
         const constraints = {
@@ -36,12 +36,12 @@ async function setupWebcam() {
     });
 }
 
-// Variablen für das Modell und die aktuelle Erkennung
+// Für die Farb-Erkennung
 let model;
 let currentDetection = null;
 let mixedColors = [];
 
-// Teachable Machine Modell laden
+// Teachable Machine 
 async function loadModel() {
     const modelURL = "https://teachablemachine.withgoogle.com/models/teNMTMV1b/";
     const modelJson = modelURL + "model.json";
@@ -54,7 +54,7 @@ async function loadModel() {
     predictLoop();
 }
 
-// Endlos-Schleife für die Vorhersage
+// Endlos-Schleife für die ergebnisse
 async function predictLoop() {
     while (true) {
         await predict();
