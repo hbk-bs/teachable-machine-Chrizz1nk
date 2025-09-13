@@ -108,47 +108,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
     <script src="index.js"></script>
-
-    <!-- Navigation Script -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Navigation Toggle
-            const navToggle = document.getElementById('navToggle');
-            const navMenu = document.getElementById('navMenu');
-
-            if (navToggle && navMenu) {
-                navToggle.addEventListener('click', () => {
-                    navMenu.classList.toggle('active');
-                });
-            }
-
-            // Smooth Scroll
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                    if (navMenu) navMenu.classList.remove('active');
-                });
-            });
-
-            // Header Scroll Effect
-            window.addEventListener('scroll', () => {
-                const header = document.querySelector('.header');
-                if (header) {
-                    if (window.scrollY > 100) {
-                        header.style.background = 'rgba(0, 0, 0, 0.95)';
-                    } else {
-                        header.style.background = 'rgba(0, 0, 0, 0.9)';
-                    }
-                }
-            });
-        });
-    </script>
 </body>
 </html>
