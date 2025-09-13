@@ -16,7 +16,7 @@ const colorMap = {
     "Gelb": { color: "#FFFF00", rgb: [255, 255, 0] }
 };
 
-// Für Webcam 
+// Für Webcam
 async function setupWebcam() {
     return new Promise((resolve, reject) => {
         const constraints = {
